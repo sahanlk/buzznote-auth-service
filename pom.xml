@@ -11,7 +11,7 @@
     </parent>
     <groupId>com.buzznote</groupId>
     <artifactId>buzznote-auth-service</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <name>buzznote</name>
     <description>Buzznote Email Newsletter Platform Core</description>
     <url/>

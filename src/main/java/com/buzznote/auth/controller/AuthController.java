@@ -51,6 +51,9 @@ public class AuthController {
 
     @GetMapping("/user-details")
     public ResponseEntity<?> userDetails(Principal user) {
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("UNAUTHORIZED");
+        }
         return ResponseEntity.ok().body(user);
     }
 

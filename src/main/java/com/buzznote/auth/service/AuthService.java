@@ -4,6 +4,7 @@ import com.buzznote.auth.dto.LoginRequest;
 import com.buzznote.auth.dto.LoginResponse;
 import com.buzznote.auth.dto.RegisterRequest;
 import com.buzznote.auth.dto.RegisterResponse;
+import com.buzznote.auth.exception.DuplicateResourceException;
 import com.buzznote.auth.exception.InvalidCredentialsException;
 import com.buzznote.auth.models.User;
 import com.buzznote.auth.repo.UserRepo;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -84,8 +86,12 @@ public class AuthService {
         newUser.setEmail(user.getEmail());
         newUser.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        User u = userRepo.save(newUser);
-        return new RegisterResponse(u.getEmail());
+        try {
+            User u = userRepo.save(newUser);
+            return new RegisterResponse(u.getEmail());
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicateResourceException("email already exists");
+        }
     }
 
     public Optional<User> findUserByEmail(String email) {
